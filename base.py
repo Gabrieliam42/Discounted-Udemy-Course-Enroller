@@ -759,6 +759,12 @@ class Udemy:
             with open("test/dma.json", "w") as f:
                 json.dump(dma, f, indent=4)
 
+        # Check if 'course' exists in dma['serverSideProps'] to avoid KeyError
+        if "course" not in dma["serverSideProps"]:
+            if self.debug:
+                print("Error: 'course' key missing in serverSideProps")
+            return "invalid", url, False
+
         is_free = not dma["serverSideProps"]["course"].get("isPaid", True)
         if not self.debug and self.is_course_excluded(dma):
             return "excluded", r.url, False
