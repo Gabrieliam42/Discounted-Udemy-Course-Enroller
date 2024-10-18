@@ -492,13 +492,14 @@ class Udemy:
         self.enrolled_courses = courses
 
     def check_for_update(self) -> tuple[str, str]:
-        r_version = (
-            requests.get(
-                "https://api.github.com/repos/techtanic/Discounted-Udemy-Course-Enroller/releases/latest"
-            )
-            .json()["tag_name"]
-            .removeprefix("v")
-        )
+        r = requests.get(
+            "https://api.github.com/repos/techtanic/Discounted-Udemy-Course-Enroller/releases/latest"
+        ).json()
+        
+        r_version = r.get("tag_name", "").removeprefix("v")  # Safely get the tag_name or return an empty string
+        if not r_version:  # If tag_name is not present
+            return f"Login {VERSION}", f"Discounted-Udemy-Course-Enroller {VERSION}"
+
         c_version = VERSION.removeprefix("v")
         if c_version < r_version:
             return (
